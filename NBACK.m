@@ -10,39 +10,41 @@
 % Screen('Preference', 'SkipSyncTests', 1);
 clear;
 
-SSID=inputdlg('Subject ID','Inputs',1,0)
-defaults={  SSID, ... % subject id
+SSID=inputdlg('Subject ID')
+params={  SSID, ... % subject id
 			'2', ... % N-back number
 			'3', ... % number of blocks
 			'5', ... % number of matches per block
 			'30'};   % number of trials per block
 
-if strcmp(questdlg('Run with defaults?'),'Yes')
-	answer = defaults;
-else
-	prompt={'Subject ID','N=?','Number of blocks','Number of matches','Trials per block'};
+% yn = questdlg('Run with defaults?');
+% if strcmp(yn,'Yes')
+	% disp('Running with defaults...');
+% elseif strcmp(yn,'No')
+	% prompt={'Subject ID','N=?','Number of blocks','Number of matches','Trials per block'};
 		
-	repeat = true;
-	while repeat == true
-		answer=inputdlg(prompt,'Inputs',1,defaults);
-		if strcmp(questdlg(strcat('Running sub-',num2str(SSID),'. Is that correct?')),'Yes')
-			repeat = false;
-			resp=[];
-		end
-    end
-end
+	% repeat = true;
+	% while repeat == true
+		% params=inputdlg(prompt,'Inputs',1,params);
+		% if strcmp(questdlg(strcat('Running sub-',num2str(SSID),'. Is that correct?')),'Yes')
+			% repeat = false;
 
-SSID=answer{1};
-nBack=str2num(answer{2}); N=nBack;
-nBlock=str2num(answer{3});
-nMatch=str2num(answer{4});
-nTrial=str2num(answer{5});
+		% end
+    % end
+% end
+
+SSID=params{1}{1};
+nBack=str2num(params{2}); N=nBack;
+nBlock=str2num(params{3});
+nMatch=str2num(params{4});
+nTrial=str2num(params{5});
+
 
 % output file name
-output_dir = strcat('../../sourcedata/sub-',num2str(SSID));
+output_dir = strcat('../../sourcedata/sub-',SSID);
 mkdir(output_dir);
 fName = strcat(output_dir,'/sub-',SSID,'_task-nback_beh.xlsx'); % output file name
-fNameALT = strcat(output_dir,'/sub-',num2str(SSID),'_task-nback_beh__',num2str(randi([10000 99999])),'.xlsx'); % alternate file name
+fNameALT = strcat(output_dir,'/sub-',SSID,'_task-nback_beh__',num2str(randi([10000 99999])),'.xlsx'); % alternate file name
 
 ListenChar(0); % Suppress keystrokes to the console or editor
 
@@ -51,7 +53,7 @@ ListenChar(0); % Suppress keystrokes to the console or editor
 KbCheck;
 WaitSecs(0.1);
 GetSecs;
-for randomizer=1:SSID
+for randomizer=1:999
     randi(47);
     rand(47);
 end
@@ -127,7 +129,7 @@ DrawFormattedText(w,['This is an N-back task.\n\n', ...
     'center','center', [],[],[],[], 2);
 
 Screen('Flip',w);
-
+resp=[];
 while ~strcmp(resp,'space')
         [~,keyCode,~]=KbWait([],2);
         resp=KbName(keyCode);
