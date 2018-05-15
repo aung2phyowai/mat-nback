@@ -13,9 +13,9 @@ clear;
 SSID=inputdlg('Subject ID')
 params={  SSID, ... % subject id
 			'2', ... % N-back number
-			'3', ... % number of blocks
-			'5', ... % number of matches per block
-			'30'};   % number of trials per block
+			'2', ... % number of blocks
+			'4', ... % number of matches per block
+			'20'};   % number of trials per block
 
 % yn = questdlg('Run with defaults?');
 % if strcmp(yn,'Yes')
