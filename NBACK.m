@@ -235,7 +235,20 @@ while repeat == true
         repeat = false;
     end
 end
-    
+   
+% Write practice output
+pracOut = [num2cell(pracResp), ...
+    num2cell(pracCResp), ...
+    num2cell(pracRT)];
+pracOut=[pracHdr; pracOut];
+
+try
+    xlswrite(fName,pracOut,2);
+catch me
+    fName=fNameALT;
+    xlswrite(fName,pracOut,2);
+end
+
 %% Start Task
 for b=1:nBlock
     
@@ -300,11 +313,6 @@ DrawFormattedText(w,strcat('You have finished the N-back task.\n\n', ...
 Screen('Flip',w);
 
 %% Export datafile
-
-pracOut = [num2cell(pracResp), ...
-    num2cell(pracCResp), ...
-    num2cell(pracRT)];
-pracOut=[pracHdr; pracOut];
 
 taskOut=cell(nTrial,nBlock*3);
 for b=1:nBlock
