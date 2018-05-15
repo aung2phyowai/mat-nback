@@ -250,6 +250,9 @@ catch me
 end
 
 %% Start Task
+taskOut=cell(nTrial,nBlock*3);
+taskOut=[taskHdr;taskOut];
+
 for b=1:nBlock
     
     Screen('TextSize',w, 25);
@@ -258,6 +261,7 @@ for b=1:nBlock
     
     WaitSecs(4);
     
+    % Run all trials for this block
     for t=1:nTrial
         Screen('TextSize',w, 60);
         DrawFormattedText(w,num2str(taskOrder(t,b)),'center','center');
@@ -282,6 +286,8 @@ for b=1:nBlock
             
         end
         
+   
+    
         %     if pracRT(i,1) == 0, pracRT(i,1) = 3000; end
         Screen('TextSize',w, 40);
         DrawFormattedText(w,'+','center','center');
@@ -290,6 +296,29 @@ for b=1:nBlock
         %         Screen('FillRect',w, feedColorRed, feedRectBot);
         %     end
         Screen('Flip',w); resp=[]; WaitSecs(1);
+    end
+    
+    Screen('TextSize',w,40);
+    DrawFormattedText(w,'Short Break','center',y-300);
+    Screen('TextSize',w,25);
+    DrawFormattedText(w,['You have completed block ', ...
+        num2str(b),' of the task.\n\n', ...
+        'Please wait...'], ... 
+        'center','center', [],[],[],[], 2);
+    Screen('Flip',w);
+    
+    % Write task output so far
+    for t=1:nTrial %{1,1}
+        taskOut{t+1,1+((b-1)*3)} = taskResp(t,b);
+        taskOut{t+1,2+((b-1)*3)} = taskCResp(t,b);
+        taskOut{t+1,3+((b-1)*3)} = taskRT(t,b);
+    end
+
+    try
+        xlswrite(fName,taskOut,1);
+    catch me
+        fName=fNameALT;
+        xlswrite(fName,taskOut,1);
     end
     
     Screen('TextSize',w,40);
@@ -307,34 +336,34 @@ for b=1:nBlock
     end; resp=[];
 end
 
-Screen('TextSize',w, 25);
-DrawFormattedText(w,strcat('You have finished the N-back task.\n\n', ...
-    'Please wait...'),'center','center');
-Screen('Flip',w);
+% Screen('TextSize',w, 25);
+% DrawFormattedText(w,strcat('You have finished the N-back task.\n\n', ...
+%     'Please wait...'),'center','center');
+% Screen('Flip',w);
 
 %% Export datafile
 
-taskOut=cell(nTrial,nBlock*3);
-for b=1:nBlock
-    for t=1:nTrial
-        taskOut{t,1+((b-1)*nBlock)} = taskResp(t,b);
-        taskOut{t,2+((b-1)*nBlock)} = taskCResp(t,b);
-        taskOut{t,3+((b-1)*nBlock)} = taskRT(t,b);
-    end
-end
-taskOut=[taskHdr;taskOut];
+% 
+% for b=1:nBlock
+%     for t=1:nTrial
+%         taskOut{t,1+((b-1)*3)} = taskResp(t,b);
+%         taskOut{t,2+((b-1)*3)} = taskCResp(t,b);
+%         taskOut{t,3+((b-1)*3)} = taskRT(t,b);
+%     end
+% end
+% taskOut=[taskHdr;taskOut];
 
 % output file name now defined at initialization
 % fName=strcat('sub-',num2str(SSID),'_task-nback_','beh.xlsx'); % output file name
 
-try
-    xlswrite(fName,pracOut,2);
-    xlswrite(fName,taskOut,1);
-catch me
-    fName=fNameALT;
-    xlswrite(fName,pracOut,2);
-    xlswrite(fName,taskOut,1);
-end
+% try
+%     xlswrite(fName,pracOut,2);
+%     xlswrite(fName,taskOut,1);
+% catch me
+%     fName=fNameALT;
+%     xlswrite(fName,pracOut,2);
+%     xlswrite(fName,taskOut,1);
+% end
 
 % xlswrite(fName,pracOut,2);
 % xlswrite(fName,taskOut,1);
